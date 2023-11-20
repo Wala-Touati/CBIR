@@ -2,15 +2,16 @@
 
 from __future__ import print_function
 
-from evaluate import evaluate_class
-from DB import Database
+from src.evaluate import evaluate_class
+from src.DB import Database
 
 from skimage.feature import hog
 from skimage import color
 
-from six.moves import cPickle
+import pickle
 import numpy as np
-import scipy.misc
+
+import cv2
 import os
 
 n_bin    = 10
@@ -89,7 +90,8 @@ class HOG(object):
     if isinstance(input, np.ndarray):  # examinate input type
       img = input.copy()
     else:
-      img = scipy.misc.imread(input, mode='RGB')
+      #img = scipy.misc.imread(input, mode='RGB')
+      img = cv2.imread(input)
     height, width, channel = img.shape
   
     if type == 'global':
@@ -128,7 +130,7 @@ class HOG(object):
       sample_cache = "HOG-{}-n_bin{}-n_slice{}-n_orient{}-ppc{}-cpb{}".format(h_type, n_bin, n_slice, n_orient, p_p_c, c_p_b)
   
     try:
-      samples = cPickle.load(open(os.path.join(cache_dir, sample_cache), "rb", True))
+      samples = pickle.load(open(os.path.join(cache_dir, sample_cache), "rb", True))
       for sample in samples:
         sample['hist'] /= np.sum(sample['hist'])  # normalize
       if verbose:
@@ -147,7 +149,7 @@ class HOG(object):
                         'cls':  d_cls, 
                         'hist': d_hist
                       })
-      cPickle.dump(samples, open(os.path.join(cache_dir, sample_cache), "wb", True))
+      pickle.dump(samples, open(os.path.join(cache_dir, sample_cache), "wb", True))
 
     return samples
 

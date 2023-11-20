@@ -9,13 +9,13 @@ from torchvision import models
 from torchvision.models.resnet import Bottleneck, BasicBlock, ResNet
 import torch.utils.model_zoo as model_zoo
 
-from six.moves import cPickle
+import pickle
 import numpy as np
-import scipy.misc
+import cv2
 import os
 
-from evaluate import evaluate_class
-from DB import Database
+from src.evaluate import evaluate_class
+from src.DB import Database
 
 
 '''
@@ -123,7 +123,7 @@ class ResNetFeat(object):
     sample_cache = '{}-{}'.format(RES_model, pick_layer)
   
     try:
-      samples = cPickle.load(open(os.path.join(cache_dir, sample_cache), "rb", True))
+      samples = pickle.load(open(os.path.join(cache_dir, sample_cache), "rb", True))
       for sample in samples:
         sample['hist'] /= np.sum(sample['hist'])  # normalize
       if verbose:
@@ -140,7 +140,8 @@ class ResNetFeat(object):
       data = db.get_data()
       for d in data.itertuples():
         d_img, d_cls = getattr(d, "img"), getattr(d, "cls")
-        img = scipy.misc.imread(d_img, mode="RGB")
+        #img = scipy.misc.imread(d_img, mode="RGB")
+        img = cv2.imread(d_img)
         img = img[:, :, ::-1]  # switch to BGR
         img = np.transpose(img, (2, 0, 1)) / 255.
         img[0] -= means[0]  # reduce B's mean
@@ -162,7 +163,7 @@ class ResNetFeat(object):
                          })
         except:
           pass
-      cPickle.dump(samples, open(os.path.join(cache_dir, sample_cache), "wb", True))
+      pickle.dump(samples, open(os.path.join(cache_dir, sample_cache), "wb", True))
   
     return samples
 

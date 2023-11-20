@@ -2,16 +2,16 @@
 
 from __future__ import print_function
 
-from evaluate import evaluate_class
-from DB import Database
+from src.evaluate import evaluate_class
+from src.DB import Database
 
-from color import Color
-from daisy import Daisy
-from edge  import Edge
-from gabor import Gabor
-from HOG   import HOG
-from vggnet import VGGNetFeat
-from resnet import ResNetFeat
+from src.color import Color
+from src.daisy import Daisy
+from src.edge  import Edge
+from src.gabor import Gabor
+from src.HOG   import HOG
+from src.vggnet import VGGNetFeat
+from src.resnet import ResNetFeat
 
 from sklearn.random_projection import johnson_lindenstrauss_min_dim
 from sklearn import random_projection
